@@ -1,4 +1,4 @@
-# Fake Data Generator
+# Fake Commerce Data Generator
 
 ## Overview
 This is a Python script for generating fake transaction data for testing and development purposes. The script simulates the generation of orders, merchants, payment links, and transactions, populating corresponding JSON files with realistic-looking data.
