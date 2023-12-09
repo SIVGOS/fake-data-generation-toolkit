@@ -58,7 +58,7 @@ def generate_payment_info(time, payment_link_id, status):
     with open(transactions_file, 'a') as fout:
         fout.write(json.dumps(transaction)+'\n')
 
-def generate_order(ts, merchant_id):
+def generate_order(time, merchant_id):
     global order_counter
     order_counter += 1
 
@@ -82,7 +82,8 @@ def generate_order(ts, merchant_id):
         'product_price': product_price,
         'payment_method': payment_method,
         'payment_ref_number': payment_ref_number,
-        'payment_status': 'SUCCESS' if payment_status in ('SUCCESS', 'RETRIED') else 'FAILED'
+        'payment_status': 'SUCCESS' if payment_status in ('SUCCESS', 'RETRIED') else 'FAILED',
+        'created_on': time.strftime('%Y-%m-%d %H:%S:%M')
     }
     with open(order_file, 'a') as fout:
         fout.write(json.dumps(order) + '\n')
@@ -96,7 +97,7 @@ def data_generator(ts):
         return
     merchant_id=rd.randint(1, merchant_counter)
 
-    product_price, payment_ref_number, payment_status = generate_order(ts, merchant_id)
+    payment_status, product_price, payment_ref_number = generate_order(ts, merchant_id)
 
     if payment_ref_number is None:
         return
