@@ -6,6 +6,7 @@ order_file = 'data/orders.jsonl'
 merchants_file = 'data/merchants.jsonl'
 transactions_file = 'data/transactions.jsonl'
 payment_links_file = 'data/payment_links.jsonl'
+fake_dates_file = 'data/fake-dates.txt'
 
 city_populations = {
     "New Delhi": 16314838,

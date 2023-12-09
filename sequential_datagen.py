@@ -1,4 +1,3 @@
-import shutil
 import os, json, uuid
 import random as rd
 import datetime as dt
@@ -122,23 +121,31 @@ def data_generator(ts):
                           payment_link_id=link_id,
                           status='SUCCESS')
 
-def main():
-    start_date = dt.date(2020,1,1)
-    end_date = dt.date(2023,12,31)
+def generate_order_data(start_date, end_date, max_entries_per_day):
     n_days = (end_date-start_date).days + 1
     for i in range(n_days):
         cur_date = start_date + dt.timedelta(days=i)
-        timestamps = get_weighted_timestamps(cur_date, 20)
+        timestamps = get_weighted_timestamps(cur_date, max_entries_per_day)
         n_timestamps = len(timestamps)
         for j, timestamp in enumerate(timestamps):
             data_generator(timestamp)
             print(f'Generating data: day {i} of {n_days}\ttimestamps: {j} of {n_timestamps}')
 
-if __name__=='__main__':
-    if any([os.path.exists(f) for f in [order_file, merchants_file, transactions_file, payment_links_file]]):
+def check_existing_files():
+    output_files = [order_file, merchants_file, transactions_file, payment_links_file]
+    existing_files = [f for f in output_files if os.path.exists(f)]
+    if existing_files:
         opt = input('Are you sure that you want to delete existing files and create new ones? Y/N')
         if opt.lower()!='y':
-            exit(0)
-    shutil.rmtree('./data')
-    os.makedirs('./data')
-    main()
+            return False
+    for f in existing_files:
+        os.remove(f)
+
+    return True    
+
+if __name__=='__main__':
+    start_date = dt.date(2021,1,1)
+    end_date = dt.date.today() - dt.timedelta(days=1)
+    if check_existing_files():
+        generate_order_data(start_date, end_date, 20)
+

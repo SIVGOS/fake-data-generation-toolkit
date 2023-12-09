@@ -1,6 +1,7 @@
-import ast, json
+import ast, json, os
 import datetime as dt
 import random
+from config import fake_dates_file
 
 with open('resources/hour_weights.json') as fin:
     hour_weights = json.load(fin)
@@ -28,25 +29,32 @@ def get_weighted_timestamps(date, max_trans_per_daty):
     
     return sorted(timestamps)
 
-def generate_fake_dates(start_date, end_date, max_trans_per_daty):
+def generate_fake_dates(start_date, end_date, max_entries_per_day):
     assert(isinstance(start_date, dt.date))
     assert(isinstance(end_date, dt.date))
     assert(start_date<end_date)
 
+    if os.path.exists(fake_dates_file):
+        opt = input(f'Are you sure that you want to overwrite the existing file \"{fake_dates_file}\"? Y/N ')
+        if opt.lower() != 'y':
+            exit(0)
+    
+    os.remove(fake_dates_file)
+
     curr_date = start_date
     timestamps = []
     while curr_date <= end_date:
-        print('curr_date:', curr_date, end='\r')
-        timestamps += get_weighted_timestamps(curr_date, max_trans_per_daty)
+        timestamps += get_weighted_timestamps(curr_date, max_entries_per_day)
         curr_date += dt.timedelta(days=1)
-    print('\n')
-    return timestamps
+    timestamps_str = [str(ts) for ts in timestamps]
+    with open(fake_dates_file, 'w') as fout:
+        fout.write('\n'.join(timestamps_str))
 
 if __name__=='__main__':
     start_date = dt.date(2021,1,1)
     end_date = dt.date(2023, 11, 1)
     timestamps = generate_fake_dates(start_date, end_date, 500)
     print('Writing result to file')
-    with open('results.txt', 'w') as fout:
+    with open(fake_dates_file, 'w') as fout:
         for ts in timestamps:
             fout.write(ts.strftime('%Y-%m-%d %H:%M:%S\n'))
