@@ -1,12 +1,18 @@
+import os
 from product_data_generator import ProductLoader
 from faker import Faker
 from secret_string_generator import SecretGenerator
 
-order_file = 'data/orders.jsonl'
-merchants_file = 'data/merchants.jsonl'
-transactions_file = 'data/transactions.jsonl'
-payment_links_file = 'data/payment_links.jsonl'
-fake_dates_file = 'data/fake-dates.txt'
+data_dir = 'data'
+
+if not os.path.exists(data_dir):
+    os.makedirs(data_dir)
+
+order_file = os.path.join(data_dir, 'orders.jsonl')
+merchants_file = os.path.join(data_dir, 'merchants.jsonl')
+transactions_file = os.path.join(data_dir, 'transactions.jsonl')
+payment_links_file = os.path.join(data_dir, 'payment_links.jsonl')
+fake_dates_file = os.path.join(data_dir, 'fake-dates.txt')
 
 city_populations = {
     "New Delhi": 16314838,

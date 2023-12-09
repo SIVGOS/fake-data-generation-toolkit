@@ -39,7 +39,8 @@ def generate_fake_dates(start_date, end_date, max_entries_per_day):
         if opt.lower() != 'y':
             exit(0)
     
-    os.remove(fake_dates_file)
+    if os.path.exists(fake_dates_file):
+        os.remove(fake_dates_file)
 
     curr_date = start_date
     timestamps = []
