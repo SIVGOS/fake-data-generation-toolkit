@@ -6,3 +6,4 @@ virtualenv*
 data
 results.txt
 test*
+nohup*
