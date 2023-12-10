@@ -37,10 +37,10 @@ The `push_to_database.py` script is an optional utility for pushing the generate
 To generate data, run the `main.py` script with appropriate command-line arguments. For example:
 
 ```bash
-python main.py transactions --start-date 2022-01-01 --end-date 2023-12-31 -m 1000
+python main.py transactions --start-date 2022-01-01 --end-date 2023-12-31 -mc 10 -mm 10 -em 3
 ```
 
-This command generates transaction data for the specified date range with a maximum of 1000 entries per day.
+This command generates transaction data for the specified date range with a maximum of 10 entries per day per merchant, a maximum of 10 merchants to be created, and 3 existing stores.
 
 To push the generated data to a database, use the `push_to_database.py` script. Update the script with your database connection details and run:
 

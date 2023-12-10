@@ -25,7 +25,6 @@ def add_new_merchant(time):
     }
     with open(merchants_file, 'a') as fout:
         fout.write(json.dumps(merchant) + '\n')
-    return merchant_counter
 
 def generate_payment_link(time, status, amount, payment_ref_number, merchant_id=None):
     global payment_link_counter
@@ -92,9 +91,9 @@ def generate_order(time, merchant_id):
 
 
 def data_generator(ts):
-    if merchant_counter < 3 or rd.random() < 0.01:
-        add_new_merchant(ts)
+    if merchant_counter<1:
         return
+    
     merchant_id=rd.randint(1, merchant_counter)
 
     payment_status, product_price, payment_ref_number = generate_order(ts, merchant_id)
@@ -122,15 +121,33 @@ def data_generator(ts):
                           payment_link_id=link_id,
                           status='SUCCESS')
 
-def generate_order_data(start_date, end_date, max_entries_per_day):
+def generate_order_data(start_date, end_date, max_merchant_count, daily_max_entries_per_merchant, existing_merchants_count):
     n_days = (end_date-start_date).days + 1
+
+    for i in range(existing_merchants_count):
+        add_new_merchant(dt.datetime.combine(start_date, dt.time.min))
+
     for i in range(n_days):
         cur_date = start_date + dt.timedelta(days=i)
-        timestamps = get_weighted_timestamps(cur_date, max_entries_per_day)
+        add_merchant = False
+        max_transactions_count = merchant_counter*daily_max_entries_per_merchant
+        if (merchant_counter < max_merchant_count) and (rd.random() < n_days/(max_merchant_count-existing_merchants_count)):
+            add_merchant = True
+            max_transactions_count += round(daily_max_entries_per_merchant*0.7) # lower count on first day
+        timestamps = get_weighted_timestamps(cur_date, max_transactions_count)
         n_timestamps = len(timestamps)
         for j, timestamp in enumerate(timestamps):
+            if add_merchant and (timestamp.hour >= 9):
+                add_new_merchant(timestamp)
+                add_merchant = False
+                continue
             data_generator(timestamp)
-            print(f'Generating data: day {i} of {n_days}\ttimestamps: {j} of {n_timestamps}')
+            print(f'Generating data: day {i+1} of {n_days}\ttimestamps: {j+1} of {n_timestamps}')
+
+    print('Number of Merchants created:', merchant_counter)
+    print('Number of orders created:', order_counter)
+    print('Number of payment created links:', payment_link_counter)
+    print('Number of transactions created:', transaction_counter)
 
 def check_existing_files():
     output_files = [order_file, merchants_file, transactions_file, payment_links_file]

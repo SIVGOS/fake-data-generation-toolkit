@@ -16,8 +16,12 @@ def parse_arguments():
 
     parser.add_argument('--end-date', default=str(yesterday), type=lambda s: datetime.strptime(s, '%Y-%m-%d').date(),
                         help='Specify the end date in the format YYYY-MM-DD. Default is the yesterday.')
-    parser.add_argument('-m', '--max-entries-per-day', default=1000, type=int, 
-                        help='Specify the maximum number of entries per day.')
+    parser.add_argument('-mc', '--daily-max-entries-per-merchant', default=10, type=int, 
+                        help='Specify the maximum number of entries per day per merchant.')
+    parser.add_argument('-mm', '--max-merchant-count', default=10, type=int,
+                        help='Specify the maximum number of merchants to be created.')
+    parser.add_argument('-em', '--existing-merchants-count', default=3, type=int,
+                        help='Specify the number of existing stores.')
 
     args = parser.parse_args()
     return args
@@ -31,7 +35,8 @@ if __name__ == '__main__':
 
     if args.cmd == 'transactions':
         if check_existing_files():
-            generate_order_data(args.start_date, args.end_date, args.max_entries_per_day)
+            generate_order_data(args.start_date, args.end_date, args.max_merchant_count, 
+                                args.daily_max_entries_per_merchant, args.existing_merchants_count)
     
     if args.cmd == 'dates':
-        generate_fake_dates(args.start_date, args.end_date, args.max_entries_per_day)
+        generate_fake_dates(args.start_date, args.end_date, args.daily_max_entries_per_merchant)
