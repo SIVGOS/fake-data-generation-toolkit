@@ -131,7 +131,7 @@ def generate_order_data(start_date, end_date, max_merchant_count, daily_max_entr
         cur_date = start_date + dt.timedelta(days=i)
         add_merchant = False
         max_transactions_count = merchant_counter*daily_max_entries_per_merchant
-        if (merchant_counter < max_merchant_count) and (rd.random() < n_days/(max_merchant_count-existing_merchants_count)):
+        if (merchant_counter < max_merchant_count) and (rd.random() < (max_merchant_count-existing_merchants_count)/n_days):
             add_merchant = True
             max_transactions_count += round(daily_max_entries_per_merchant*0.7) # lower count on first day
         timestamps = get_weighted_timestamps(cur_date, max_transactions_count)
